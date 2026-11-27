@@ -1,0 +1,394 @@
+{
+  "entities": {
+    "PublicUserProfile": {
+      "title": "PublicUserProfile",
+      "description": "Minimal non-PII public profile for an authenticated Darul Idarah cloud user.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID matching the document ID."
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Public display name shown in the cloud workspace."
+        },
+        "preferredTheme": {
+          "type": "string",
+          "enum": ["light", "dark"],
+          "maxLength": 10,
+          "description": "User UI theme preference."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the latest update."
+        }
+      },
+      "required": ["uid", "displayName", "preferredTheme", "createdAt", "updatedAt"]
+    },
+    "PrivateUserProfile": {
+      "title": "PrivateUserProfile",
+      "description": "Owner-isolated PII and Darul Idarah account linkage metadata.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 160,
+          "description": "Verified Google account email address."
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Optional Google avatar URL."
+        },
+        "linkedUsername": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Linked Darul Idarah username."
+        },
+        "linkedAccountType": {
+          "type": "string",
+          "enum": ["", "super_admin", "institution_admin", "teacher", "staff", "student", "guardian"],
+          "maxLength": 32,
+          "description": "Linked Darul Idarah account category for display."
+        },
+        "linkedInstitutionName": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Linked Madrasa institution name."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": ["uid", "email", "photoURL", "linkedUsername", "linkedAccountType", "linkedInstitutionName", "createdAt", "updatedAt"]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted platform administrator membership document.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Admin Firebase Auth UID."
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Admin role label."
+        },
+        "grantedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the admin who granted access."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when admin access was granted."
+        }
+      },
+      "required": ["uid", "label", "grantedBy", "createdAt"]
+    },
+    "CloudInstitution": {
+      "title": "CloudInstitution",
+      "description": "Cloud Firestore synced Madrasa institution summary record.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID."
+        },
+        "institutionCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "description": "Unique Madrasa institution code."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Madrasa institution name."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "draft", "pending", "suspended"],
+          "maxLength": 20,
+          "description": "Institution lifecycle status."
+        },
+        "academicYear": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Current academic year label."
+        },
+        "studentCount": {
+          "type": "integer",
+          "description": "Total active students."
+        },
+        "teacherCount": {
+          "type": "integer",
+          "description": "Total active teachers and staff."
+        },
+        "totalIncome": {
+          "type": "number",
+          "description": "Total recorded income in BDT."
+        },
+        "totalExpense": {
+          "type": "number",
+          "description": "Total recorded expense in BDT."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when synced."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of latest sync."
+        }
+      },
+      "required": ["ownerId", "institutionCode", "name", "status", "academicYear", "studentCount", "teacherCount", "totalIncome", "totalExpense", "createdAt", "updatedAt"]
+    },
+    "CloudBackup": {
+      "title": "CloudBackup",
+      "description": "Structured Darul Idarah platform or institution snapshot stored in Firestore.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID."
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["platform", "institution"],
+          "maxLength": 20,
+          "description": "Backup scope."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Snapshot title."
+        },
+        "institutionName": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Institution name or platform label."
+        },
+        "recordCount": {
+          "type": "integer",
+          "description": "Total number of records included in this snapshot."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "archived"],
+          "maxLength": 20,
+          "description": "Lifecycle status of the backup snapshot."
+        },
+        "summaryText": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Human-readable snapshot summary."
+        },
+        "exportedAtDhaka": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "description": "Asia/Dhaka formatted export timestamp."
+        },
+        "metrics": {
+          "type": "object",
+          "description": "Structured numeric counts map (institutions, users, students, teachers, transactions, notices)."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Up to 5 short string labels."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of snapshot creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": ["ownerId", "scope", "title", "institutionName", "recordCount", "status", "summaryText", "exportedAtDhaka", "metrics", "tags", "createdAt", "updatedAt"]
+    },
+    "CloudNote": {
+      "title": "CloudNote",
+      "description": "Real-time synced personal administrative note under a user's workspace.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID matching parent userId."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Note heading."
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "description": "Note content."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["general", "academic", "finance", "hostel", "support"],
+          "maxLength": 20,
+          "description": "Administrative note category."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open", "done"],
+          "maxLength": 12,
+          "description": "Completion state; done is terminal for non-admins."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Up to 5 short tags."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last-updated timestamp."
+        }
+      },
+      "required": ["ownerId", "title", "body", "category", "status", "tags", "createdAt", "updatedAt"]
+    },
+    "CloudAnnouncement": {
+      "title": "CloudAnnouncement",
+      "description": "Platform-wide real-time cloud announcement authored by a verified platform admin.",
+      "type": "object",
+      "properties": {
+        "authorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Admin Firebase Auth UID who authored the announcement."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 150,
+          "description": "Announcement headline."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "description": "Announcement body."
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["normal", "important", "urgent"],
+          "maxLength": 20,
+          "description": "Announcement urgency level."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published", "archived"],
+          "maxLength": 20,
+          "description": "Publication status; archived is terminal."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp."
+        }
+      },
+      "required": ["authorId", "title", "message", "priority", "status", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/PublicUserProfile" },
+      "description": "Public non-PII user profile documents keyed by Firebase Auth UID."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/PrivateUserProfile" },
+      "description": "Owner-restricted PII and Darul Idarah linkage record under a verified parent user document."
+    },
+    "/users/{userId}/notes/{noteId}": {
+      "schema": { "$ref": "#/entities/CloudNote" },
+      "description": "Owner-scoped real-time administrative cloud notes under a verified parent user document."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Trusted platform admin registry."
+    },
+    "/institutions/{institutionId}": {
+      "schema": { "$ref": "#/entities/CloudInstitution" },
+      "description": "Owner-scoped Cloud Firestore synced Madrasa institution summaries."
+    },
+    "/cloudBackups/{backupId}": {
+      "schema": { "$ref": "#/entities/CloudBackup" },
+      "description": "Owner-isolated structured cloud backup snapshots for Darul Idarah."
+    },
+    "/announcements/{announcementId}": {
+      "schema": { "$ref": "#/entities/CloudAnnouncement" },
+      "description": "Platform-wide cloud announcements writable only by verified admins and readable when published."
+    }
+  }
+}

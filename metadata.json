@@ -1,0 +1,8 @@
+{
+  "name": "DARUL IDARAH (দারুল ইদারা)",
+  "description": "Complete multi-institution Madrasa Management & Administration SaaS platform with academic, examination, attendance, finance, hostel, library, and role-based portal management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
